@@ -1,0 +1,1603 @@
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔨 By El bandido</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-image: url('https://img.freepik.com/photos-premium/abeille-est-vue-dans-champ-fleurs-soleil-brillant-scene_78492-45908.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: #fff;
+      text-align: center;
+      min-height: 100vh;
+      padding: 10px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(26, 26, 46, 0.7) 0%, rgba(22, 33, 62, 0.7) 50%, rgba(15, 52, 96, 0.7) 100%);
+      z-index: -1;
+    }
+
+    .game-container {
+      width: 100%;
+      max-width: 800px;
+      background: rgba(10, 15, 30, 0.9);
+      border-radius: 20px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+      position: relative;
+      border: 2px solid rgba(184, 134, 11, 0.5);
+      margin-bottom: 20px;
+    }
+
+    .game-container::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #b8860b, #daa520, #ffd700, #daa520, #b8860b);
+      border-radius: 22px;
+      z-index: -1;
+      animation: borderGlow 3s linear infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes borderGlow {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    h1 {
+      font-size: 1.8em;
+      margin-bottom: 15px;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+      background: linear-gradient(45deg, #ffd700, #daa520, #b8860b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .squirrel-logo {
+      width: 50px;
+      height: 50px;
+      margin: 0 auto 15px;
+      background-image: url('https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/1f43f.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+      animation: squirrelBounce 2s ease-in-out infinite;
+    }
+
+    @keyframes squirrelBounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-5px) scale(1.05); }
+    }
+
+    .difficulty-selector {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .difficulty-btn {
+      width: 90px;
+      height: 90px;
+      border-radius: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      font-size: 14px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      position: relative;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(5px);
+      animation: floatButton 3s ease-in-out infinite;
+    }
+
+    @keyframes floatButton {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-8px) scale(1.05); }
+    }
+
+    .difficulty-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
+    }
+
+    .difficulty-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-3px) scale(1.08);
+    }
+
+    .difficulty-btn.active {
+      border-color: white;
+      box-shadow: 0 0 10px rgba(255,255,255,0.5);
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .instructions {
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(184, 134, 11, 0.3);
+    }
+
+    .instructions h2 {
+      font-size: 1.4em;
+      margin-bottom: 8px;
+      background: linear-gradient(45deg, #ffd700, #daa520);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .instructions p {
+      font-size: 1em;
+      font-weight: bold;
+      color: #daa520;
+    }
+
+    .gold-container {
+      position: relative;
+      margin: 20px auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      min-height: 500px;
+      perspective: 1000px;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .bee-monster {
+      width: 80px;
+      height: 80px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      filter: drop-shadow(0 0 10px rgba(255, 200, 0, 0.6));
+      animation: floatBee 2s ease-in-out infinite;
+    }
+
+    .bee-monster:hover {
+      transform: scale(1.1);
+      filter: drop-shadow(0 0 15px rgba(255, 200, 0, 0.9));
+    }
+
+    .bee-monster.defeated {
+      opacity: 0.3;
+      filter: grayscale(100%);
+      pointer-events: none;
+    }
+
+    .bee1 {
+      background-image: url('https://i.ibb.co/Z1VjBN9M/IMG-7448-Photoroom.png');
+      animation-delay: 0s;
+    }
+
+    .bee2 {
+      background-image: url('https://i.ibb.co/xKD7BD4K/IMG-7449-Photoroom.png');
+      animation-delay: 0.3s;
+    }
+
+    .bee3 {
+      background-image: url('https://i.ibb.co/HDZ2xw2K/IMG-7445-Photoroom.png');
+      animation-delay: 0.6s;
+    }
+
+    @keyframes floatBee {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .hp-bar {
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70px;
+      height: 8px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .hp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4CAF50, #8BC34A);
+      transition: width 0.3s ease;
+      border-radius: 4px;
+    }
+
+    .coins-earned {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(45deg, #ffd700, #ffed4a);
+      color: #000;
+      padding: 5px 12px;
+      border-radius: 15px;
+      font-weight: bold;
+      font-size: 14px;
+      animation: coinEarn 1.5s ease forwards;
+      pointer-events: none;
+      z-index: 1000;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+    }
+
+    @keyframes coinEarn {
+      0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px) scale(0.5);
+      }
+      40% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-10px) scale(1.2);
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-40px) scale(1);
+      }
+    }
+
+    .gold-bar {
+      width: 500px;
+      height: 300px;
+      margin: 0 auto;
+      background-image: url('https://i.ibb.co/kgw8Xj95/IMG-7451-Photoroom.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      position: relative;
+      transition: all 0.3s ease;
+      filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)) brightness(1.2) contrast(1.1);
+      z-index: 5;
+    }
+
+    .gold-bar.easy {
+      filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.7)) brightness(1.1);
+    }
+
+    .gold-bar.medium {
+      filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)) brightness(1.1) hue-rotate(15deg);
+    }
+
+    .gold-bar.hard {
+      filter: drop-shadow(0 0 25px rgba(255, 0, 0, 0.8)) brightness(1.1) hue-rotate(330deg);
+      animation: redGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes redGlow {
+      0% { filter: drop-shadow(0 0 25px rgba(255, 0, 0, 0.8)) brightness(1.1) hue-rotate(330deg); }
+      100% { filter: drop-shadow(0 0 35px rgba(255, 50, 50, 1)) brightness(1.3) hue-rotate(320deg); }
+    }
+
+    .gold-bar.hit {
+      animation: lightHit 0.4s ease-out;
+    }
+
+    .gold-bar.heavy-hit {
+      animation: heavyHit 0.6s ease-out;
+    }
+
+    .gold-bar.critical-hit {
+      animation: criticalHit 0.8s ease-out;
+    }
+
+    .gold-bar.cracked {
+      filter: brightness(0.7) drop-shadow(0 0 15px rgba(255, 0, 0, 0.8));
+      animation: redPulse 1s infinite;
+    }
+
+    .gold-bar.broken {
+      opacity: 0.3;
+      filter: grayscale(100%) brightness(0.3);
+      animation: knockout 1.5s ease-out forwards;
+    }
+
+    .attack-modes {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+
+    .attack-mode-image {
+      width: 110px;
+      height: 110px;
+      cursor: pointer;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      position: relative;
+      animation: floatAttack 2.5s ease-in-out infinite;
+    }
+
+    @keyframes floatAttack {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-6px) scale(1.03); }
+    }
+
+    .attack-mode-image:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .attack-mode-image:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .attack-mode-image:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    .attack-mode-image:nth-child(4) {
+      animation-delay: 0.6s;
+    }
+
+    .attack-mode-image:nth-child(5) {
+      animation-delay: 0.8s;
+    }
+
+    .attack-mode-image:nth-child(6) {
+      animation-delay: 1s;
+    }
+
+    .attack-mode-image:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-5px) scale(1.08);
+    }
+
+    .attack-mode-image.active {
+      border-color: #fff;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+
+    .attack-mode-image img {
+      width: 65px;
+      height: 65px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+    }
+
+    .attack-mode-label {
+      font-size: 13px;
+      margin-top: 5px;
+      font-weight: bold;
+      color: #feca57;
+      text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+    }
+
+    .hammer {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      font-size: 2.5em;
+      z-index: 10;
+      top: -30px;
+      right: -15px;
+      transform-origin: bottom center;
+      transition: transform 0.3s ease;
+      pointer-events: none;
+    }
+
+    .hammer.hitting {
+      animation: hammerHit 0.4s ease-out;
+    }
+
+    @keyframes hammerHit {
+      0% { transform: rotate(0deg) translateY(0); }
+      50% { transform: rotate(-45deg) translateY(15px); }
+      100% { transform: rotate(0deg) translateY(0); }
+    }
+
+    @keyframes lightHit {
+      0% { transform: translateY(0) scale(1); }
+      25% { transform: translateY(-5px) scale(0.95); }
+      50% { transform: translateY(3px) scale(1.02); }
+      75% { transform: translateY(-2px) scale(0.98); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    @keyframes heavyHit {
+      0% { transform: translateY(0) scale(1); }
+      20% { transform: translateY(-8px) scale(0.9); }
+      40% { transform: translateY(5px) scale(1.05); }
+      60% { transform: translateY(-3px) scale(0.95); }
+      80% { transform: translateY(2px) scale(1.02); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    @keyframes criticalHit {
+      0% { transform: translateY(0) scale(1); }
+      15% { transform: translateY(-12px) scale(0.85); }
+      30% { transform: translateY(8px) scale(1.1); }
+      45% { transform: translateY(-6px) scale(0.9); }
+      60% { transform: translateY(4px) scale(1.05); }
+      75% { transform: translateY(-2px) scale(0.97); }
+      90% { transform: translateY(1px) scale(1.02); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    @keyframes knockout {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      30% { transform: translateY(-10px) scale(0.9); opacity: 0.9; }
+      70% { transform: translateY(40px) scale(0.7); opacity: 0.7; }
+      100% { transform: translateY(60px) scale(0.6); opacity: 0.4; }
+    }
+
+    @keyframes redPulse {
+      0%, 100% { filter: brightness(0.7) drop-shadow(0 0 15px rgba(255, 0, 0, 0.8)); }
+      50% { filter: brightness(0.5) drop-shadow(0 0 25px rgba(255, 0, 0, 1)); }
+    }
+
+    .screen-shake {
+      animation: screenShake 0.4s ease-out;
+    }
+
+    @keyframes screenShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .impact-effect {
+      position: absolute;
+      font-size: 2em;
+      pointer-events: none;
+      z-index: 3;
+      animation: impactPop 1s ease-out forwards;
+      opacity: 0;
+      filter: drop-shadow(0 0 10px rgba(255,255,255,0.8));
+    }
+
+    @keyframes impactPop {
+      0% { opacity: 0; transform: scale(0.3) translateY(0); }
+      30% { opacity: 1; transform: scale(1.5) translateY(-15px); }
+      100% { opacity: 0; transform: scale(1) translateY(-50px); }
+    }
+
+    .controls {
+      margin: 15px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 25px;
+      background: linear-gradient(45deg, #b8860b, #daa520);
+      color: #fff;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      background: linear-gradient(45deg, #daa520, #ffd700);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    #resetBtn {
+      background: linear-gradient(45deg, #555, #777);
+    }
+
+    #resetBtn:hover {
+      background: linear-gradient(45deg, #777, #999);
+    }
+
+    #spawnBeesBtn {
+      background: linear-gradient(45deg, #ff9800, #ffc107);
+    }
+
+    #spawnBeesBtn:hover {
+      background: linear-gradient(45deg, #ffc107, #ffd54f);
+    }
+
+    #message {
+      margin: 15px 0;
+      font-size: 1em;
+      font-weight: bold;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      min-height: 25px;
+      color: #daa520;
+    }
+
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .popup-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .popup-content {
+      background: linear-gradient(135deg, rgba(184, 134, 11, 0.95), rgba(218, 165, 32, 0.95));
+      padding: 25px;
+      border-radius: 20px;
+      max-width: 450px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border: 3px solid rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(10px);
+      transform: scale(0.7);
+      transition: transform 0.4s ease;
+      position: relative;
+    }
+
+    .popup-overlay.active .popup-content {
+      transform: scale(1);
+    }
+
+    .popup-content h3 {
+      font-size: 1.8em;
+      margin-bottom: 15px;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .popup-reward-image {
+      width: 140px;
+      height: 140px;
+      margin: 15px auto;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+
+    .popup-reward-text {
+      font-size: 1.3em;
+      margin: 15px 0;
+      color: #fff;
+      font-weight: bold;
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .popup-victory-message {
+      font-size: 1.4em;
+      margin: 15px 0;
+      color: #feca57;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+      font-weight: bold;
+    }
+
+    .popup-close-btn {
+      padding: 10px 25px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 20px;
+      background: linear-gradient(45deg, #b8860b, #daa520);
+      color: #fff;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    .popup-close-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+      background: linear-gradient(45deg, #daa520, #ffd700);
+    }
+
+    .coins-display {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(45deg, #b8860b, #daa520);
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      animation: coinPop 1s ease;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    @keyframes coinPop {
+      0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px) scale(0.5);
+      }
+      50% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-10px) scale(1.2);
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-30px) scale(1);
+      }
+    }
+
+    .combo-indicator {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: linear-gradient(45deg, #b8860b, #daa520);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9em;
+      display: none;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+
+    .difficulty-badge {
+      display: inline-block;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .difficulty-badge.easy {
+      background: linear-gradient(45deg, #4CAF50, #8BC34A);
+    }
+
+    .difficulty-badge.medium {
+      background: linear-gradient(45deg, #FF9800, #FFC107);
+    }
+
+    .difficulty-badge.hard {
+      background: linear-gradient(45deg, #F44336, #E91E63);
+    }
+
+    @media (min-width: 768px) {
+      .game-container {
+        padding: 30px;
+        max-width: 900px;
+      }
+      
+      h1 {
+        font-size: 2.2em;
+      }
+      
+      .gold-bar {
+        width: 600px;
+        height: 350px;
+      }
+      
+      .hammer {
+        width: 80px;
+        height: 80px;
+        font-size: 3em;
+        top: -40px;
+        right: -20px;
+      }
+      
+      .controls {
+        flex-direction: row;
+        justify-content: center;
+      }
+      
+      button {
+        padding: 15px 30px;
+      }
+
+      .attack-mode-image {
+        width: 100px;
+        height: 100px;
+      }
+
+      .attack-mode-image img {
+        width: 55px;
+        height: 55px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .attack-modes {
+        gap: 5px;
+        padding: 0 5px;
+      }
+
+      .attack-mode-image {
+        width: 85px;
+        height: 85px;
+      }
+
+      .attack-mode-image img {
+        width: 50px;
+        height: 50px;
+      }
+
+      .attack-mode-label {
+        font-size: 11px;
+      }
+
+      .gold-bar {
+        width: 350px;
+        height: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container" id="gameContainer">
+    <div class="combo-indicator" id="comboIndicator">COMBO x0</div>
+
+    <h1>🔨 By El bandido</h1>
+    <div class="squirrel-logo"></div>
+    
+    <div class="difficulty-selector">
+      <div class="difficulty-btn easy active" data-difficulty="easy">
+        <img src="https://i.ibb.co/JMPfpWV/IMG-5851.png" alt="Galaxie">
+      </div>
+      <div class="difficulty-btn medium" data-difficulty="medium">
+        <img src="https://i.ibb.co/p6s7HT5n/IMG-7322.png" alt="Taureau">
+      </div>
+      <div class="difficulty-btn hard" data-difficulty="hard">
+        <img src="https://i.ibb.co/hxXnkQh7/IMG-5861.png" alt="Léon">
+      </div>
+    </div>
+    
+    <div class="gold-container">
+      <div class="bee-monster bee1" id="bee1">
+        <div class="hp-bar">
+          <div class="hp-fill" id="bee1HP" style="width: 100%;"></div>
+        </div>
+      </div>
+      <div class="gold-bar easy" id="goldBar"></div>
+      <div class="bee-monster bee2" id="bee2">
+        <div class="hp-bar">
+          <div class="hp-fill" id="bee2HP" style="width: 100%;"></div>
+        </div>
+      </div>
+      <div class="bee-monster bee3" id="bee3">
+        <div class="hp-bar">
+          <div class="hp-fill" id="bee3HP" style="width: 100%;"></div>
+        </div>
+      </div>
+      <div class="hammer" id="hammer">🔨</div>
+    </div>
+
+    <div class="instructions">
+      <h2>🌹By El bandido Casse La ruche</h2>
+      <p>Un Coup = Un Point de Vie en Moins</p>
+    </div>
+
+    <div class="attack-modes">
+      <div id="mode1" class="attack-mode-image active">
+        <img src="https://i.ibb.co/WNXDxn2y/IMG-7354-Photoroom.png" alt="Rose - 1 coup">
+        <div class="attack-mode-label">1 coup</div>
+      </div>
+      <div id="mode10" class="attack-mode-image">
+        <img src="https://i.ibb.co/7JsBRrCn/IMG-5885.png" alt="Rosa - 10 coups">
+        <div class="attack-mode-label">10 coups</div>
+      </div>
+      <div id="mode30" class="attack-mode-image">
+        <img src="https://i.ibb.co/8DMJ0cxy/IMG-7355-Photoroom.png" alt="Donuts - 30 coups">
+        <div class="attack-mode-label">30 coups</div>
+      </div>
+      <div id="mode100" class="attack-mode-image">
+        <img src="https://i.ibb.co/C5M6DHcS/IMG-7356-Photoroom.png" alt="Coeurs - 100 coups">
+        <div class="attack-mode-label">100 coups</div>
+      </div>
+      <div id="mode500" class="attack-mode-image">
+        <img src="https://i.ibb.co/nNy17WfL/IMG-6065.png" alt="Mini Gun - 500 coups">
+        <div class="attack-mode-label">500 coups</div>
+      </div>
+      <div id="mode1000" class="attack-mode-image">
+        <img src="https://i.ibb.co/JMPfpWV/IMG-5851.png" alt="Galaxie - 1000 coups">
+        <div class="attack-mode-label">1000 coups</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="attackBtn">🔨 Attaquer</button>
+      <button id="resetBtn">Nouvelle Ruche</button>
+      <button id="spawnBeesBtn">Faire Apparaître les Abeilles</button>
+    </div>
+
+    <p id="message"></p>
+  </div>
+
+  <div class="popup-overlay" id="victoryPopup">
+    <div class="popup-content">
+      <h3>🎉 Ruche Cassée 🎉</h3>
+      <div id="popupRewardImage" class="popup-reward-image"></div>
+      <p id="popupRewardText" class="popup-reward-text"></p>
+      <div id="popupVictoryMessage" class="popup-victory-message"></div>
+      <button class="popup-close-btn" id="closePopupBtn">Continuer</button>
+    </div>
+  </div>
+
+  <div class="popup-overlay" id="coinsPopup">
+    <div class="popup-content">
+      <h3>💰 Abeille Vaincue ! 💰</h3>
+      <div style="font-size: 80px; margin: 20px 0;">🐝💥</div>
+      <p class="popup-reward-text" style="font-size: 2em; color: #ffd700;">+100 Pièces !</p>
+      <div class="popup-victory-message">Félicitations ! Continue de casser la ruche !</div>
+      <button class="popup-close-btn" id="closeCoinsPopupBtn">Continuer</button>
+    </div>
+  </div>
+
+  <script>
+    let maxHP, currentHP, totalHits;
+    let hitsUntilCoin = 4;
+    let attackMode = 1;
+    let rosesEarnedThisGold = 0;
+    let combo = 0;
+    let lastHitTime = 0;
+    let isAttacking = false;
+    let currentDifficulty = "easy";
+    
+    // Points de vie modifiés pour les abeilles
+    let bee1HP = 200;
+    let bee2HP = 500;
+    let bee3HP = 700;
+    let totalCoins = 0;
+
+    // Gestion des sons
+    let audioContext = null;
+    let hitSoundBuffer = null;
+    let rewardSoundBuffer = null;
+    let isHitSoundPlaying = false;
+    let isRewardSoundPlaying = false;
+
+    function loadGameData() {
+      const saved = {
+        difficulty: currentDifficulty,
+        attackMode: attackMode
+      };
+      
+      try {
+        const savedDifficulty = saved.difficulty;
+        const savedAttackMode = saved.attackMode;
+        
+        if (savedDifficulty) {
+          currentDifficulty = savedDifficulty;
+        }
+        if (savedAttackMode) {
+          attackMode = savedAttackMode;
+        }
+      } catch (e) {
+        console.log('Pas de sauvegarde trouvée');
+      }
+    }
+
+    function saveGameData() {
+    }
+
+    const goldBar = document.getElementById("goldBar");
+    const hammer = document.getElementById("hammer");
+    const message = document.getElementById("message");
+    const attackBtn = document.getElementById("attackBtn");
+    const gameContainer = document.getElementById("gameContainer");
+    const comboIndicator = document.getElementById("comboIndicator");
+    
+    const victoryPopup = document.getElementById("victoryPopup");
+    const popupRewardImage = document.getElementById("popupRewardImage");
+    const popupRewardText = document.getElementById("popupRewardText");
+    const popupVictoryMessage = document.getElementById("popupVictoryMessage");
+    const closePopupBtn = document.getElementById("closePopupBtn");
+    
+    const coinsPopup = document.getElementById("coinsPopup");
+    const closeCoinsPopupBtn = document.getElementById("closeCoinsPopupBtn");
+
+    const impactEffects = ["💥", "🔥", "⭐", "💫", "✨", "💢"];
+
+    // Initialisation de l'audio
+    function initAudio() {
+      try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Charger les sons
+        loadSound('https://files.catbox.moe/73lkke.mp3', function(buffer) {
+          hitSoundBuffer = buffer;
+        });
+        
+        loadSound('https://files.catbox.moe/goq31j.mp3', function(buffer) {
+          rewardSoundBuffer = buffer;
+        });
+        
+      } catch (e) {
+        console.error("Erreur d'initialisation audio:", e);
+      }
+    }
+
+    // Charger un son depuis une URL
+    function loadSound(url, callback) {
+      const request = new XMLHttpRequest();
+      request.open('GET', url, true);
+      request.responseType = 'arraybuffer';
+
+      request.onload = function() {
+        audioContext.decodeAudioData(request.response, function(buffer) {
+          callback(buffer);
+        }, function(e) {
+          console.error('Erreur de décodage audio:', e);
+        });
+      };
+
+      request.send();
+    }
+
+    // Jouer un son sans répétition
+    function playSound(buffer, isPlayingFlag, maxDuration = 3) {
+      if (!audioContext || !buffer || isPlayingFlag) return;
+      
+      try {
+        const source = audioContext.createBufferSource();
+        source.buffer = buffer;
+        
+        // Créer un gain node pour contrôler le volume
+        const gainNode = audioContext.createGain();
+        source.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        // Limiter la durée si nécessaire
+        if (buffer.duration > maxDuration) {
+          source.start(0, 0, maxDuration);
+        } else {
+          source.start(0);
+        }
+        
+        // Marquer le son comme en cours de lecture
+        isPlayingFlag = true;
+        
+        // Réinitialiser le flag quand le son est terminé
+        source.onended = function() {
+          isPlayingFlag = false;
+        };
+      } catch (e) {
+        console.error("Erreur de lecture audio:", e);
+      }
+    }
+
+    function playHitSound() {
+      playSound(hitSoundBuffer, isHitSoundPlaying, 3); // Limité à 3 secondes
+    }
+
+    function playRewardSound() {
+      playSound(rewardSoundBuffer, isRewardSoundPlaying);
+    }
+
+    function createGoldShards() {
+      const container = goldBar.parentElement;
+      
+      for (let i = 0; i < 8; i++) {
+        const shard = document.createElement('div');
+        shard.style.cssText = `
+          position: absolute;
+          width: 10px;
+          height: 6px;
+          background: linear-gradient(45deg, #ffd700, #ffed4a);
+          border-radius: 2px;
+          pointer-events: none;
+          left: 50%;
+          top: 50%;
+          z-index: 1000;
+        `;
+        
+        container.appendChild(shard);
+        
+        const angle = (i / 8) * Math.PI * 2;
+        const distance = 80 + Math.random() * 80;
+        const duration = 600 + Math.random() * 400;
+        
+        shard.animate([
+          {
+            transform: 'translate(-50%, -50%) scale(1)',
+            opacity: 1
+          },
+          {
+            transform: `translate(calc(-50% + ${Math.cos(angle) * distance}px), calc(-50% + ${Math.sin(angle) * distance}px)) scale(0)`,
+            opacity: 0
+          }
+        ], {
+          duration: duration,
+          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        }).onfinish = () => shard.remove();
+      }
+    }
+
+    function createHitParticles() {
+      const container = goldBar.parentElement;
+      
+      for (let i = 0; i < 4; i++) {
+        const particle = document.createElement('div');
+        particle.style.cssText = `
+          position: absolute;
+          width: 6px;
+          height: 6px;
+          background: #ffd700;
+          border-radius: 50%;
+          pointer-events: none;
+          left: ${45 + Math.random() * 10}%;
+          top: ${45 + Math.random() * 10}%;
+          z-index: 999;
+        `;
+        
+        container.appendChild(particle);
+        
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 20 + Math.random() * 20;
+        
+        particle.animate([
+          {
+            transform: 'scale(1)',
+            opacity: 1
+          },
+          {
+            transform: `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px) scale(0)`,
+            opacity: 0
+          }
+        ], {
+          duration: 300,
+          easing: 'ease-out'
+        }).onfinish = () => particle.remove();
+      }
+    }
+
+    function createImpactEffect() {
+      const effect = document.createElement('div');
+      effect.className = 'impact-effect';
+      effect.textContent = impactEffects[Math.floor(Math.random() * impactEffects.length)];
+      effect.style.left = (Math.random() * 80 + 10) + '%';
+      effect.style.top = (Math.random() * 60 + 20) + '%';
+      
+      document.querySelector('.gold-container').appendChild(effect);
+      
+      setTimeout(() => {
+        effect.remove();
+      }, 1000);
+    }
+
+    function updateCombo() {
+      const currentTime = Date.now();
+      if (currentTime - lastHitTime > 2000) {
+        combo = 0;
+      }
+      combo++;
+      lastHitTime = currentTime;
+      
+      if (combo >= 3) {
+        comboIndicator.textContent = `COMBO x${combo}`;
+        comboIndicator.style.display = 'block';
+      }
+    }
+
+    function updateBeeHP(beeNum, hp) {
+      const hpFill = document.getElementById(`bee${beeNum}HP`);
+      let maxHP;
+      
+      // Définir le maximum de points de vie selon l'abeille
+      if (beeNum === 1) maxHP = 200;
+      else if (beeNum === 2) maxHP = 500;
+      else if (beeNum === 3) maxHP = 700;
+      
+      const percentage = (hp / maxHP) * 100;
+      hpFill.style.width = percentage + '%';
+      
+      if (percentage <= 0) {
+        document.getElementById(`bee${beeNum}`).classList.add('defeated');
+      }
+    }
+
+    function showCoinsPopup() {
+      coinsPopup.style.display = 'flex';
+      setTimeout(() => {
+        coinsPopup.classList.add('active');
+      }, 10);
+    }
+
+    function closeCoinsPopupFunc() {
+      coinsPopup.classList.remove('active');
+      setTimeout(() => {
+        coinsPopup.style.display = 'none';
+      }, 300);
+    }
+
+    function spawnBees() {
+      // Réinitialiser les points de vie des abeilles
+      bee1HP = 200;
+      bee2HP = 500;
+      bee3HP = 700;
+      
+      updateBeeHP(1, bee1HP);
+      updateBeeHP(2, bee2HP);
+      updateBeeHP(3, bee3HP);
+      
+      document.getElementById('bee1').classList.remove('defeated');
+      document.getElementById('bee2').classList.remove('defeated');
+      document.getElementById('bee3').classList.remove('defeated');
+      
+      message.textContent = "🐝 Les abeilles sont réapparues ! 🐝";
+      
+      setTimeout(() => {
+        let difficultyName = currentDifficulty === "easy" ? "facile" : 
+                             currentDifficulty === "medium" ? "moyen" : "difficile";
+        message.textContent = `Ruche ${difficultyName} - À tout moment la ruche peut se briser...`;
+      }, 2000);
+    }
+
+    function showCoinsEarned(target) {
+      const coinsDiv = document.createElement('div');
+      coinsDiv.className = 'coins-earned';
+      coinsDiv.textContent = '+100 💰';
+      target.appendChild(coinsDiv);
+      
+      setTimeout(() => {
+        coinsDiv.remove();
+      }, 1500);
+    }
+
+    function attack() {
+      if (currentHP <= 0 || isAttacking) return;
+      
+      isAttacking = true;
+      
+      let hits = attackMode;
+      let actualHits = 0;
+      let rosesEarned = 0;
+      let wasCracked = goldBar.classList.contains('cracked');
+      
+      hammer.classList.add('hitting');
+      playHitSound();
+      updateCombo();
+      
+      // Simplifier les animations pour les gros coups - RETIRÉ les animations problématiques
+      let animationType = 'hit';
+      let shakeType = '';
+      let animationDuration = 400;
+      
+      if (attackMode <= 10) {
+        animationType = 'hit';
+        shakeType = 'screen-shake';
+        animationDuration = 400;
+      } else if (attackMode <= 30) {
+        animationType = 'heavy-hit';
+        animationDuration = 600;
+      } else if (attackMode <= 100) {
+        animationType = 'critical-hit';
+        animationDuration = 800;
+      } else {
+        // Pas d'animation pour les coups de 100, 500 et 1000 pour éviter les bugs
+        animationType = '';
+        animationDuration = 100;
+      }
+      
+      // Appliquer les dégâts
+      for (let i = 0; i < hits && currentHP > 0; i++) {
+        const targets = [];
+        
+        if (currentHP > 0) targets.push('hive');
+        if (bee1HP > 0) targets.push('bee1');
+        if (bee2HP > 0) targets.push('bee2');
+        if (bee3HP > 0) targets.push('bee3');
+        
+        if (targets.length === 0) break;
+        
+        const randomTarget = targets[Math.floor(Math.random() * targets.length)];
+        
+        if (randomTarget === 'hive') {
+          actualHits++;
+          totalHits++;
+          currentHP--;
+          
+          // Réduire les effets visuels pour les gros coups
+          if (attackMode <= 30) {
+            createHitParticles();
+            createImpactEffect();
+          }
+          
+          hitsUntilCoin--;
+          if (hitsUntilCoin <= 0) {
+            rosesEarnedThisGold++;
+            rosesEarned++;
+            hitsUntilCoin = 4;
+          }
+        } else if (randomTarget === 'bee1') {
+          bee1HP--;
+          updateBeeHP(1, bee1HP);
+          if (bee1HP <= 0) {
+            totalCoins += 100;
+            showCoinsEarned(document.getElementById('bee1'));
+            setTimeout(() => showCoinsPopup(), 500);
+          }
+        } else if (randomTarget === 'bee2') {
+          bee2HP--;
+          updateBeeHP(2, bee2HP);
+          if (bee2HP <= 0) {
+            totalCoins += 100;
+            showCoinsEarned(document.getElementById('bee2'));
+            setTimeout(() => showCoinsPopup(), 500);
+          }
+        } else if (randomTarget === 'bee3') {
+          bee3HP--;
+          updateBeeHP(3, bee3HP);
+          if (bee3HP <= 0) {
+            totalCoins += 100;
+            showCoinsEarned(document.getElementById('bee3'));
+            setTimeout(() => showCoinsPopup(), 500);
+          }
+        }
+      }
+
+      if (animationType) {
+        goldBar.classList.add(animationType);
+      }
+      if (shakeType) {
+        gameContainer.classList.add(shakeType);
+      }
+      
+      if (rosesEarned > 0) {
+        showRoseGain(rosesEarned);
+      }
+      
+      updateUI();
+      
+      if (!wasCracked && goldBar.classList.contains('cracked')) {
+        playHitSound();
+      }
+      
+      setTimeout(() => {
+        if (animationType) {
+          goldBar.classList.remove(animationType);
+        }
+        hammer.classList.remove('hitting');
+        if (shakeType) {
+          gameContainer.classList.remove(shakeType);
+        }
+        isAttacking = false;
+        
+        if (currentHP <= 0) {
+          endGame();
+        }
+      }, animationDuration);
+    }
+
+    function showRoseGain(amount) {
+      const roseDisplay = document.createElement('div');
+      roseDisplay.className = 'coins-display';
+      roseDisplay.textContent = `+${amount} 🌹`;
+      goldBar.parentElement.appendChild(roseDisplay);
+      
+      setTimeout(() => {
+        roseDisplay.remove();
+      }, 1000);
+    }
+
+    function updateUI() {
+      if (currentHP === 0) {
+        goldBar.className = "gold-bar broken " + currentDifficulty;
+        message.textContent = "💥 La ruche s'est brisée !";
+      } else {
+        if (maxHP - currentHP >= maxHP * 0.7) {
+          goldBar.classList.add("cracked");
+          message.textContent = "⚠️ La ruche commence à se fissurer...";
+        } else {
+          goldBar.classList.remove("cracked");
+          let difficultyName = currentDifficulty === "easy" ? "facile" : 
+                               currentDifficulty === "medium" ? "moyen" : "difficile";
+          message.textContent = `Ruche ${difficultyName} - À tout moment la ruche peut se briser...`;
+        }
+      }
+    }
+
+    function showVictoryPopup() {
+      let rewardText = "";
+      let victoryText = "";
+      let rewardImg = "";
+      
+      switch(currentDifficulty) {
+        case "easy":
+          rewardText = "galaxie scintillante !";
+          victoryText = "Félicitations ! Tu as découvert un trésor cosmique !";
+          rewardImg = "https://i.ibb.co/JMPfpWV/IMG-5851.png";
+          break;
+        case "medium":
+          rewardText = "taureau magique !";
+          victoryText = "Incroyable ! Tu as trouvé le taureau légendaire !";
+          rewardImg = "https://i.ibb.co/p6s7HT5n/IMG-7322.png";
+          break;
+        case "hard":
+          rewardText = "Léon chaton !";
+          victoryText = "Victoire totale ! Tu as découvert l'adorable Léon !";
+          rewardImg = "https://i.ibb.co/hxXnkQh7/IMG-5861.png";
+          break;
+      }
+      
+      popupRewardImage.style.backgroundImage = `url('${rewardImg}')`;
+      
+      popupRewardText.innerHTML = `
+        <div class="difficulty-badge ${currentDifficulty}">NIVEAU ${currentDifficulty.toUpperCase()}</div><br>
+        <strong>RÉCOMPENSE :</strong><br>
+        ${rewardText}
+      `;
+      
+      popupVictoryMessage.textContent = victoryText;
+      
+      victoryPopup.style.display = 'flex';
+      setTimeout(() => {
+        victoryPopup.classList.add('active');
+      }, 10);
+      
+      // Jouer le son de récompense
+      playRewardSound();
+    }
+
+    function closeVictoryPopup() {
+      victoryPopup.classList.remove('active');
+      setTimeout(() => {
+        victoryPopup.style.display = 'none';
+      }, 300);
+    }
+
+    function endGame() {
+      playHitSound();
+      setTimeout(() => createGoldShards(), 100);
+      
+      message.textContent = "💥 Félicitations ! Tu as cassé la ruche de By El bandido ! 🌹✨";
+      
+      setTimeout(() => {
+        showVictoryPopup();
+      }, 500);
+      
+      comboIndicator.style.display = "none";
+    }
+
+    function setAttackMode(mode) {
+      attackMode = mode;
+      
+      document.querySelectorAll('.attack-mode-image').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      const btnEl = document.getElementById(`mode${mode}`);
+      if (btnEl) btnEl.classList.add('active');
+
+      saveGameData();
+    }
+
+    function setDifficulty(difficulty) {
+      currentDifficulty = difficulty;
+      
+      document.querySelectorAll('.difficulty-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector(`.difficulty-btn.${difficulty}`).classList.add('active');
+      
+      goldBar.className = "gold-bar " + difficulty;
+      
+      saveGameData();
+      initGame();
+    }
+
+    function initGame() {
+      switch(currentDifficulty) {
+        case "easy":
+          maxHP = 8000;
+          break;
+        case "medium":
+          maxHP = 20000;
+          break;
+        case "hard":
+          maxHP = 30000;
+          break;
+      }
+
+      currentHP = maxHP;
+      totalHits = 0;
+      hitsUntilCoin = 4;
+      rosesEarnedThisGold = 0;
+      combo = 0;
+      lastHitTime = 0;
+      isAttacking = false;
+      
+      // Réinitialiser les points de vie des abeilles
+      bee1HP = 200;
+      bee2HP = 500;
+      bee3HP = 700;
+      
+      updateBeeHP(1, bee1HP);
+      updateBeeHP(2, bee2HP);
+      updateBeeHP(3, bee3HP);
+      
+      document.getElementById('bee1').classList.remove('defeated');
+      document.getElementById('bee2').classList.remove('defeated');
+      document.getElementById('bee3').classList.remove('defeated');
+      
+      goldBar.className = "gold-bar " + currentDifficulty;
+      message.textContent = `Ruche ${currentDifficulty === "easy" ? "facile" : currentDifficulty === "medium" ? "moyen" : "difficile"} - À tout moment la ruche peut se briser...`;
+      
+      closeVictoryPopup();
+      closeCoinsPopupFunc();
+      comboIndicator.style.display = "none";
+    }
+
+    // Initialisation des événements
+    document.getElementById("attackBtn").addEventListener("click", attack);
+    document.getElementById("resetBtn").addEventListener("click", initGame);
+    document.getElementById("spawnBeesBtn").addEventListener("click", spawnBees);
+
+    document.getElementById("mode1").addEventListener("click", () => setAttackMode(1));
+    document.getElementById("mode10").addEventListener("click", () => setAttackMode(10));
+    document.getElementById("mode30").addEventListener("click", () => setAttackMode(30));
+    document.getElementById("mode100").addEventListener("click", () => setAttackMode(100));
+    document.getElementById("mode500").addEventListener("click", () => setAttackMode(500));
+    document.getElementById("mode1000").addEventListener("click", () => setAttackMode(1000));
+
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        setDifficulty(this.getAttribute('data-difficulty'));
+      });
+    });
+
+    closePopupBtn.addEventListener('click', closeVictoryPopup);
+    closeCoinsPopupBtn.addEventListener('click', closeCoinsPopupFunc);
+
+    victoryPopup.addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeVictoryPopup();
+      }
+    });
+    
+    coinsPopup.addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeCoinsPopupFunc();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (isAttacking) return;
+      
+      switch(e.key) {
+        case ' ':
+        case 'Enter':
+          e.preventDefault();
+          attack();
+          break;
+        case '1':
+          setAttackMode(1);
+          break;
+        case '2':
+          setAttackMode(10);
+          break;
+        case '3':
+          setAttackMode(30);
+          break;
+        case '4':
+          setAttackMode(100);
+          break;
+        case '5':
+          setAttackMode(500);
+          break;
+        case '6':
+          setAttackMode(1000);
+          break;
+        case 'r':
+        case 'R':
+          initGame();
+          break;
+        case 'b':
+        case 'B':
+          spawnBees();
+          break;
+        case 'e':
+        case 'E':
+          setDifficulty('easy');
+          break;
+        case 'm':
+        case 'M':
+          setDifficulty('medium');
+          break;
+        case 'd':
+        case 'D':
+          setDifficulty('hard');
+          break;
+        case 'Escape':
+          closeVictoryPopup();
+          break;
+      }
+    });
+
+    setInterval(() => {
+      const currentTime = Date.now();
+      if (currentTime - lastHitTime > 3000 && combo > 0) {
+        combo = 0;
+        comboIndicator.style.display = "none";
+      }
+    }, 1000);
+
+    // Initialisation du jeu
+    loadGameData();
+    
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    document.querySelector(`.difficulty-btn.${currentDifficulty}`).classList.add('active');
+    
+    setAttackMode(attackMode);
+
+    // Initialiser l'audio et démarrer le jeu
+    initAudio();
+    initGame();
+  </script>
+</body>
+</html>
